@@ -40,7 +40,7 @@
 
 /* Info-Icons weniger dominant */
 .md-status {
-  opacity: .3;
+  display: none;
 }
 
 /* Dark Mode Navigation */
