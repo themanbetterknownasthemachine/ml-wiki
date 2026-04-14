@@ -59,3 +59,8 @@
 [data-md-color-scheme="slate"] .md-nav--primary > .md-nav__list > .md-nav__item > nav > .md-nav__title {
   color: rgba(255,255,255,.85);
 }
+
+/* Footer auf Chat-Seite ausblenden */
+.page-chat .md-footer {
+  display: none;
+}

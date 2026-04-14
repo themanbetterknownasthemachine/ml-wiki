@@ -2,6 +2,7 @@
 title: Wiki Chat
 search:
   exclude: true
+template: main.html
 ---
 
 <style>
