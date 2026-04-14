@@ -12,7 +12,7 @@ aktualisiert: 2026-04-14
 |-------|--------|-------------|
 | [[n-hits]] | aktuell | Deep-Learning Forecasting-Modell mit hierarchischer Interpolation |
 | [[sarimax]] | aktuell | Klassisches statistisches Zeitreihen-Modell (Baseline) |
-| [[foundation-models-zeitreihen]] | draft | Vortrainierte Modelle für Zero-Shot Forecasting (Chronos-2, TimesFM) |
+| [[foundation-models-zeitreihen]] | aktuell | Vortrainierte Modelle für Zero-Shot Forecasting (Chronos-2, TimesFM) |
 
 ## Concepts
 
@@ -30,7 +30,9 @@ aktualisiert: 2026-04-14
 
 ## Sources
 
-_Noch keine Quellen ingestiert._
+| Seite | Typ | Beschreibung |
+|-------|-----|-------------|
+| [[chronos-2-paper]] | paper | Chronos-2: Group Attention, multivariate Foundation Model (Amazon, 2025) |
 
 ## Runbooks
 

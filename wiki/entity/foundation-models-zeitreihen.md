@@ -2,10 +2,10 @@
 title: "Foundation Models für Zeitreihen"
 type: entity
 tags: [forecasting, foundation-model, chronos, timesfm, deep-learning]
-status: draft
+status: aktuell
 erstellt: 2026-04-14
 aktualisiert: 2026-04-14
-quellen: 0
+quellen: 1
 ---
 
 # Foundation Models für Zeitreihen
@@ -17,11 +17,15 @@ Foundation Models für Zeitreihen sind vortrainierte Modelle, die auf grossen Me
 ## Kandidaten (Stand April 2026)
 
 ### Chronos-2 (Amazon)
-- Nachfolger von Chronos (2024), basiert auf T5-Architektur
-- Tokenisiert Zeitreihenwerte ähnlich wie Text-Tokens
-- Vortrainiert auf Millionen von Zeitreihen (synthetisch + real)
-- Verschiedene Grössen verfügbar (Mini bis Large)
+- Nachfolger von Chronos-Bolt, **Encoder-only Transformer** (T5-ähnlich, [[Transformer Architektur|RoPE]]-Embeddings)
+- Kernidee: **Group Attention** — ermöglicht In-Context Learning über verwandte Serien (multivariate + covariates)
+- Unterstützt: univariat, multivariat, Past-Only Covariates, Known (zukunftsbekannte) Covariates, kategorische Covariates
+- Training: ~700K reale univariate Zeitreihen + synthetische Multivariatizers (TCM, TSI-Generator)
+- Grössen: Base (120M), Small (28M — nur ~1% schlechter)
+- Output: 21 Quantile für probabilistisches Forecasting
+- Durchsatz: ~300 Serien/Sekunde auf A10G GPU
 - Open Source (Apache 2.0)
+- Quelle: [[chronos-2-paper]]
 
 ### TimesFM 2.5 (Google)
 - Decoder-only Transformer, speziell für Zeitreihen designt
@@ -86,4 +90,17 @@ Der zentrale Unterschied zu [[N-HiTS]] oder [[SARIMAX]]:
 - GPU-Infrastruktur: reicht die lokale Hardware oder Cloud nötig?
 - Können Foundation Models das [[Feature Engineering für Zeitreihen|Feature Engineering]] komplett ersetzen oder nur ergänzen?
 
+## Benchmark-Überblick (Zero-Shot, fev-bench 2025)
+
+| Modell | Skill Score | Covariate-Support | Multivariat |
+|--------|-------------|-------------------|-------------|
+| **Chronos-2** | **47.3%** | ✓ full | ✓ |
+| TiRex | 42.6% | ✗ | ✗ |
+| TimesFM-2.5 | 42.3% | teilweise | ✓ |
+| Chronos-Bolt | 38.9% | ✗ | ✗ |
+
+Chronos-2 gewinnt auf allen 3 grossen Benchmarks (fev-bench, GIFT-Eval, Chronos Benchmark II).
+
 ## Quellen
+
+- [[chronos-2-paper]] — Ansari et al. (Amazon, 2025): Chronos-2 Architektur, Training, Benchmarks
