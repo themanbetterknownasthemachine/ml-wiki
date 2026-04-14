@@ -17,9 +17,9 @@
   --md-default-bg-color--dark: #182625;
 }
 
-/* Navigation: bessere Lesbarkeit */
+/* Navigation Links: leichteres Grau */
 .md-nav__item .md-nav__link {
-  color: #2F3D40;
+  color: #6b7280;
   font-weight: 400;
 }
 
@@ -30,6 +30,19 @@
 .md-nav__item .md-nav__link--active {
   color: #3D5A73;
   font-weight: 600;
+}
+
+/* Slate/Dark Mode */
+[data-md-color-scheme="slate"] .md-nav__item .md-nav__link {
+  color: rgba(255,255,255,.5);
+}
+
+[data-md-color-scheme="slate"] .md-nav__item .md-nav__link:hover {
+  color: rgba(255,255,255,.85);
+}
+
+[data-md-color-scheme="slate"] .md-nav__item .md-nav__link--active {
+  color: #fff;
 }
 
 /* Kategorie-Titel (Entities, Concepts, etc.) */
