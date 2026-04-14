@@ -212,7 +212,7 @@ let conversationHistory = [];
 
 async function loadWikiBundle() {
   try {
-    const response = await fetch('./assets/wiki-bundle.json');
+    const response = await fetch('../assets/wiki-bundle.json');
     const pages = await response.json();
     wikiContent = pages.map(p =>
       `=== ${p.path} ===\n${p.content}`
