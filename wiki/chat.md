@@ -11,30 +11,31 @@ search:
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 120px);
-  max-width: 800px;
+  height: calc(100vh - 140px);
+  max-width: 840px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .chat-header {
   text-align: center;
-  padding: 1.5rem 0;
+  padding: 1.2rem 0;
   border-bottom: 1px solid var(--md-default-fg-color--lightest);
-  margin-bottom: 1rem;
+  margin-bottom: .8rem;
+  flex-shrink: 0;
 }
 
 .chat-header h2 {
   margin: 0 0 .3rem;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: var(--md-default-fg-color);
 }
 
 .chat-header p {
   margin: 0;
-  font-size: .8rem;
+  font-size: .78rem;
   color: var(--md-default-fg-color--light);
 }
 
@@ -44,6 +45,7 @@ search:
   background: var(--md-code-bg-color);
   border-radius: 8px;
   margin-bottom: 1rem;
+  flex-shrink: 0;
 }
 
 .chat-setup label {
@@ -84,14 +86,16 @@ search:
   display: flex;
   flex-direction: column;
   gap: .8rem;
+  min-height: 0;
 }
 
 .message {
   padding: .8rem 1rem;
   border-radius: 8px;
-  font-size: .88rem;
+  font-size: .85rem;
   line-height: 1.65;
-  max-width: 85%;
+  max-width: 88%;
+  overflow-wrap: break-word;
 }
 
 .message-user {
@@ -108,20 +112,91 @@ search:
   border-bottom-left-radius: 2px;
 }
 
+.message-assistant h1,
+.message-assistant h2,
+.message-assistant h3,
+.message-assistant h4 {
+  margin: .8rem 0 .4rem;
+  color: var(--md-default-fg-color);
+  font-weight: 600;
+}
+.message-assistant h1 { font-size: 1.05rem; }
+.message-assistant h2 { font-size: .95rem; }
+.message-assistant h3 { font-size: .88rem; }
+.message-assistant h4 { font-size: .85rem; }
+.message-assistant h1:first-child,
+.message-assistant h2:first-child,
+.message-assistant h3:first-child {
+  margin-top: 0;
+}
+
+.message-assistant p {
+  margin: .4rem 0;
+}
+
+.message-assistant ul, .message-assistant ol {
+  margin: .4rem 0;
+  padding-left: 1.4rem;
+}
+
+.message-assistant li {
+  margin-bottom: .2rem;
+}
+
 .message-assistant code {
   background: var(--md-default-bg-color);
-  padding: .1rem .3rem;
+  padding: .1rem .35rem;
   border-radius: 3px;
-  font-size: .8rem;
+  font-size: .78rem;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
 }
 
 .message-assistant pre {
   background: var(--md-default-bg-color);
-  padding: .6rem .8rem;
+  padding: .7rem .9rem;
   border-radius: 6px;
   overflow-x: auto;
-  margin: .5rem 0;
+  margin: .6rem 0;
+  font-size: .76rem;
+  line-height: 1.5;
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.message-assistant pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: .76rem;
+}
+
+.message-assistant table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: .6rem 0;
   font-size: .78rem;
+}
+
+.message-assistant th, .message-assistant td {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  padding: .35rem .5rem;
+  text-align: left;
+}
+
+.message-assistant th {
+  background: var(--md-default-bg-color);
+  font-weight: 600;
+}
+
+.message-assistant strong {
+  font-weight: 600;
+  color: var(--md-default-fg-color);
+}
+
+.message-assistant blockquote {
+  border-left: 3px solid var(--md-primary-fg-color);
+  margin: .5rem 0;
+  padding: .3rem .8rem;
+  color: var(--md-default-fg-color--light);
 }
 
 .message-loading {
@@ -132,8 +207,9 @@ search:
 .chat-input-area {
   display: flex;
   gap: .5rem;
-  padding: 1rem 0 0;
+  padding: .8rem 0 0;
   border-top: 1px solid var(--md-default-fg-color--lightest);
+  flex-shrink: 0;
 }
 
 .chat-input-area textarea {
@@ -141,7 +217,7 @@ search:
   padding: .6rem .8rem;
   border: 1px solid var(--md-default-fg-color--lightest);
   border-radius: 8px;
-  font-size: .88rem;
+  font-size: .85rem;
   font-family: inherit;
   resize: none;
   background: var(--md-default-bg-color);
@@ -164,6 +240,7 @@ search:
   font-size: .85rem;
   cursor: pointer;
   align-self: flex-end;
+  flex-shrink: 0;
 }
 
 .chat-input-area button:disabled {
@@ -173,9 +250,10 @@ search:
 
 .chat-info {
   text-align: center;
-  font-size: .7rem;
+  font-size: .68rem;
   color: var(--md-default-fg-color--lightest);
-  padding: .5rem 0 0;
+  padding: .4rem 0 0;
+  flex-shrink: 0;
 }
 </style>
 
@@ -194,29 +272,37 @@ search:
     <button onclick="startChat()">Chat starten</button>
   </div>
 
-  <div id="chat-area" style="display:none; flex:1; display:none; flex-direction:column;">
+  <div id="chat-area" style="display:none; flex:1; flex-direction:column; min-height:0;">
     <div class="chat-messages" id="messages"></div>
     <div class="chat-input-area">
       <textarea id="user-input" placeholder="Frage an das Wiki..." rows="1"
         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
       <button id="send-btn" onclick="sendMessage()">Senden</button>
     </div>
-    <div class="chat-info">Antworten basieren auf den Wiki-Inhalten. Kosten: ca. 1-3 Cents pro Frage.</div>
+    <div class="chat-info">Antworten basieren auf den Wiki-Inhalten.</div>
   </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/15.0.4/marked.min.js"></script>
 
 <script>
 let apiKey = '';
 let wikiContent = '';
 let conversationHistory = [];
 
+marked.setOptions({
+  breaks: true,
+  gfm: true
+});
+
 async function loadWikiBundle() {
   try {
     const response = await fetch('/ml-wiki/assets/wiki-bundle.json');
     const pages = await response.json();
-    wikiContent = pages.map(p =>
-      `=== ${p.path} ===\n${p.content}`
-    ).join('\n\n');
+    wikiContent = pages
+      .filter(p => p.path !== 'chat.md')
+      .map(p => `=== ${p.path} ===\n${p.content}`)
+      .join('\n\n');
     return true;
   } catch (e) {
     console.error('Wiki-Bundle konnte nicht geladen werden:', e);
@@ -227,7 +313,7 @@ async function loadWikiBundle() {
 async function startChat() {
   apiKey = document.getElementById('api-key').value.trim();
   if (!apiKey.startsWith('sk-ant-')) {
-    alert('Bitte einen gültigen Anthropic API Key eingeben (beginnt mit sk-ant-).');
+    alert('Bitte einen gueltigen Anthropic API Key eingeben (beginnt mit sk-ant-).');
     return;
   }
 
@@ -242,24 +328,20 @@ async function startChat() {
   chatArea.style.display = 'flex';
   document.getElementById('user-input').focus();
 
-  addMessage('assistant',
-    'Wiki geladen. Ich kenne alle Seiten und kann Fragen beantworten. Was möchtest du wissen?'
-  );
+  addMessage('assistant', 'Wiki geladen. Ich kenne alle Seiten und kann Fragen beantworten. Was moechtest du wissen?');
 }
 
 function addMessage(role, content) {
   const messages = document.getElementById('messages');
   const div = document.createElement('div');
-  div.className = `message message-${role}`;
+  div.className = 'message message-' + role;
 
-  // Einfaches Markdown-Rendering
-  let html = content
-    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n/g, '<br>');
+  if (role === 'assistant') {
+    div.innerHTML = marked.parse(content);
+  } else {
+    div.textContent = content;
+  }
 
-  div.innerHTML = html;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
   return div;
@@ -275,7 +357,7 @@ async function sendMessage() {
   document.getElementById('send-btn').disabled = true;
 
   addMessage('user', question);
-  const loadingDiv = addMessage('assistant', 'Durchsuche Wiki-Seiten...');
+  const loadingDiv = addMessage('assistant', '*Durchsuche Wiki-Seiten...*');
   loadingDiv.classList.add('message-loading');
 
   conversationHistory.push({ role: 'user', content: question });
@@ -291,14 +373,8 @@ async function sendMessage() {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 2048,
-        system: `Du bist ein Assistent für das ML & Forecasting Wiki des BI & ML Teams.
-Beantworte Fragen basierend auf den folgenden Wiki-Inhalten. Antworte auf Deutsch.
-Wenn die Antwort nicht in den Wiki-Inhalten steht, sage das ehrlich.
-Verweise auf relevante Wiki-Seiten wenn möglich.
-
-WIKI-INHALTE:
-${wikiContent}`,
+        max_tokens: 4096,
+        system: 'Du bist ein Assistent fuer das ML & Forecasting Wiki des BI & ML Teams bei Pistor AG. Beantworte Fragen basierend auf den folgenden Wiki-Inhalten. Antworte auf Deutsch. Formatiere deine Antworten mit Markdown (Ueberschriften, Listen, Code-Bloecke, Tabellen). Wenn die Antwort nicht in den Wiki-Inhalten steht, sage das ehrlich. Verweise auf relevante Wiki-Seiten wenn moeglich.\n\nWIKI-INHALTE:\n' + wikiContent,
         messages: conversationHistory
       })
     });
@@ -310,8 +386,8 @@ ${wikiContent}`,
     }
 
     const answer = data.content
-      .filter(c => c.type === 'text')
-      .map(c => c.text)
+      .filter(function(c) { return c.type === 'text'; })
+      .map(function(c) { return c.text; })
       .join('\n');
 
     conversationHistory.push({ role: 'assistant', content: answer });
@@ -321,7 +397,7 @@ ${wikiContent}`,
 
   } catch (error) {
     loadingDiv.remove();
-    addMessage('assistant', `Fehler: ${error.message}`);
+    addMessage('assistant', '**Fehler:** ' + error.message);
     conversationHistory.pop();
   }
 
@@ -329,9 +405,8 @@ ${wikiContent}`,
   input.focus();
 }
 
-// Textarea auto-resize
-document.addEventListener('DOMContentLoaded', () => {
-  const textarea = document.getElementById('user-input');
+document.addEventListener('DOMContentLoaded', function() {
+  var textarea = document.getElementById('user-input');
   if (textarea) {
     textarea.addEventListener('input', function() {
       this.style.height = 'auto';
