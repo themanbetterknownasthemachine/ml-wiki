@@ -9,12 +9,10 @@ theme:
   language: de
   palette:
     - scheme: default
-      primary: custom
       toggle:
         icon: material/brightness-7
         name: Dark Mode
     - scheme: slate
-      primary: custom
       toggle:
         icon: material/brightness-4
         name: Light Mode
