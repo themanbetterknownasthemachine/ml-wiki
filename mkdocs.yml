@@ -1,3 +1,7 @@
+site_name: ML & Forecasting Wiki
+site_description: Team-Wiki für Machine Learning, Time Series Forecasting und Data Science
+site_url: https://themanbetterknownasthemachine.github.io/ml-wiki/
+docs_dir: wiki
 theme:
   name: material
   language: de
