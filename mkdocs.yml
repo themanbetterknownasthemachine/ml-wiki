@@ -1,22 +1,17 @@
-site_name: ML & Forecasting Wiki
-site_description: Teamwiki für Machine Learning, Time Series Forecasting und Data Science
-site_url: https://themanbetterknownasthemachine.github.io/ml-wiki/
-
-docs_dir: wiki
-
 theme:
   name: material
   language: de
   palette:
     - scheme: default
+      primary: custom
       toggle:
         icon: material/brightness-7
         name: Dark Mode
     - scheme: slate
+      primary: custom
       toggle:
         icon: material/brightness-4
         name: Light Mode
-        
   features:
     - navigation.instant
     - navigation.sections

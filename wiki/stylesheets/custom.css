@@ -32,11 +32,7 @@
   font-weight: 600;
 }
 
-.md-status,
-.md-nav__icon,
-.md-nav .md-annotation,
-.md-nav [title]::after,
-abbr[title] {
+.md-nav .md-status {
   display: none !important;
 }
 
