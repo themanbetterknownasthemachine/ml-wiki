@@ -10,6 +10,9 @@ datum: {{DATUM}}
 
 # {{TITEL}}
 
+**Autoren**: {{AUTOREN}} · **Datum**: {{DATUM}}  
+**Quelle**: [{{URL}}]({{URL}})
+
 ## Kernaussagen
 <!-- 3-5 wichtigste Takeaways. -->
 

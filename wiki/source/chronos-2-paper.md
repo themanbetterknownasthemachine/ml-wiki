@@ -10,6 +10,9 @@ datum: 2025-10-01
 
 # Chronos-2: Learning General-Purpose Time Series Forecasting via In-Context Ensembling
 
+**Autoren**: Ansari et al. (Amazon) · **Datum**: Oktober 2025  
+**Paper**: [arXiv:2510.15821](https://arxiv.org/abs/2510.15821)
+
 ## Kernbotschaft
 
 Chronos-2 erweitert [[Foundation Models für Zeitreihen|Foundation Models]] von univariaten auf **multivariate Zeitreihen und Covariates** durch einen neu eingeführten **Group Attention Mechanismus**, der In-Context Learning (ICL) über verwandte Serien ermöglicht — ohne task-spezifisches Training.
