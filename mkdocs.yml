@@ -1,6 +1,6 @@
 site_name: ML & Forecasting Wiki
 site_description: Teamwiki für Machine Learning, Time Series Forecasting und Data Science
-site_url: https://tonibetterknownasthemachine.github.io/ml-wiki/
+site_url: https://themanbetterknownasthemachine.github.io/ml-wiki/
 
 docs_dir: wiki
 
@@ -31,7 +31,7 @@ theme:
   icon:
     repo: fontawesome/brands/github
 
-repo_url: https://github.com/tonibetterknownasthemachine/ml-wiki
+repo_url: https://github.com/themanbetterknownasthemachine/ml-wiki
 repo_name: ml-wiki
 
 plugins:
@@ -62,9 +62,13 @@ nav:
     - SARIMAX: entity/sarimax.md
     - Foundation Models: entity/foundation-models-zeitreihen.md
   - Concepts:
+    - Backtesting: concept/backtesting.md
+    - Foundation Model vs. N-HiTS: concept/foundation-model-vs-nhits.md
     - Hyperparameter-Tuning (Optuna): concept/hyperparameter-tuning-optuna.md
     - SHAP Explainability: concept/shap-explainability.md
     - Feature Engineering Zeitreihen: concept/feature-engineering-zeitreihen.md
   - Decisions:
     - ADR-001 N-HiTS statt Prophet: decision/adr-001-nhits-statt-prophet.md
+  - Sources:
+    - Chronos-2 Paper: source/chronos-2-paper.md
   - Log: log.md
