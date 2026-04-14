@@ -18,6 +18,8 @@ aktualisiert: 2026-04-14
 
 | Seite | Status | Beschreibung |
 |-------|--------|-------------|
+| [[backtesting]] | aktuell | Zeitreihen-gerechte Evaluation: Expanding/Sliding Window, Metriken, Fallstricke |
+| [[foundation-model-vs-nhits]] | aktuell | Entscheidungsrahmen: Foundation Model vs. N-HiTS — wann was einsetzen |
 | [[hyperparameter-tuning-optuna]] | aktuell | Bayesian Optimization für ML-Hyperparameter mit Optuna |
 | [[shap-explainability]] | aktuell | Erklärbarkeit von ML-Vorhersagen über Shapley-Werte |
 | [[feature-engineering-zeitreihen]] | aktuell | Lag-, Kalender- und Rolling-Features für Zeitreihen |
@@ -44,7 +46,7 @@ _Noch keine Runbooks erstellt._
 
 Diese Seiten werden in bestehenden Pages referenziert, haben aber noch keine eigene Seite:
 
-- [[Backtesting]] — Zeitreihen-gerechte Evaluation (Expanding/Sliding Window)
+- ~~[[Backtesting]]~~ → erstellt als [[backtesting]]
 - [[Bias-Variance Tradeoff]] — Overfitting vs. Underfitting verstehen
 - [[Gradient Descent]] — Optimierungsalgorithmus für Neural Networks
 - [[Transformer Architektur]] — Q/K/V, Attention, RoPE

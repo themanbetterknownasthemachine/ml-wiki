@@ -5,6 +5,19 @@ type: log
 
 # Wiki Log — ML & Forecasting
 
+## [2026-04-14] query | Backtesting Concept-Seite erstellt
+
+- Neue Concept-Seite: `concept/backtesting.md`
+- Inhalt: Expanding vs. Sliding Window, Metriken (MAE/MASE/WQL/CRPS), Implementierung NeuralForecast + Chronos-2, Fallstricke
+- Index aktualisiert: Backtesting aus "Fehlende Seiten" entfernt, Concepts ergänzt
+
+## [2026-04-14] query | Foundation Models vs. N-HiTS Vergleich
+
+- Frage: Was wissen wir über Foundation Models? Vergleich Chronos-2 vs. N-HiTS
+- Quellen gelesen: `entity/foundation-models-zeitreihen`, `entity/n-hits`, `source/chronos-2-paper`
+- Ergebnis als Concept abgelegt: `concept/foundation-model-vs-nhits.md`
+- Index aktualisiert
+
 ## [2026-04-14] ingest | Chronos-2 Paper (arXiv 2510.15821)
 
 - Source-Seite erstellt: `wiki/source/chronos-2-paper.md`
