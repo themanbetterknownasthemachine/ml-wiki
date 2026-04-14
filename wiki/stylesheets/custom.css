@@ -60,7 +60,6 @@
   color: rgba(255,255,255,.85);
 }
 
-/* Footer auf Chat-Seite ausblenden */
-.page-chat .md-footer {
+.md-footer, .md-footer-meta {
   display: none;
 }
