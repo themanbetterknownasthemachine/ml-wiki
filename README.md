@@ -47,7 +47,7 @@ ml-wiki/
 
 ## Datenschutz
 
-Dieses Wiki enthält **kein** sensibles Geschäftswissen — keine Kundendaten,
+Dieses Wiki enthält **kein** sensibles Geschäftswissen, keine Kundendaten,
 Umsatzzahlen, konkreten Mengen oder interne Organisationsdetails.
 Es dokumentiert technisches Handwerkswissen: ML-Konzepte, Patterns,
 Architekturentscheidungen und Troubleshooting-Guides.
