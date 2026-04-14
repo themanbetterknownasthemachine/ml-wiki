@@ -18,9 +18,6 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Light Mode
-
-extra_css:
-  - stylesheets/custom.css
   features:
     - navigation.instant
     - navigation.sections
@@ -31,6 +28,9 @@ extra_css:
     - content.code.copy
   icon:
     repo: fontawesome/brands/github
+
+extra_css:
+  - stylesheets/custom.css
 
 repo_url: https://github.com/themanbetterknownasthemachine/ml-wiki
 repo_name: ml-wiki
@@ -67,6 +67,8 @@ nav:
     - Foundation Model vs. N-HiTS: concept/foundation-model-vs-nhits.md
     - Transformer Architektur: concept/transformer-architektur.md
     - Stationarität: concept/stationaritaet.md
+    - Probabilistisches Forecasting: concept/probabilistisches-forecasting.md
+    - N-HiTS Hyperparameter: concept/n-hits-hyperparameter.md
     - Hyperparameter-Tuning (Optuna): concept/hyperparameter-tuning-optuna.md
     - SHAP Explainability: concept/shap-explainability.md
     - Feature Engineering Zeitreihen: concept/feature-engineering-zeitreihen.md

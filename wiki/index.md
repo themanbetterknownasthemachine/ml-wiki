@@ -20,6 +20,8 @@ aktualisiert: 2026-04-14
 |-------|--------|-------------|
 | [[backtesting]] | aktuell | Zeitreihen-gerechte Evaluation: Expanding/Sliding Window, Metriken, Fallstricke |
 | [[transformer-architektur]] | aktuell | Q/K/V Attention, RoPE, Patching — Basis von Chronos-2 und TimesFM |
+| [[probabilistisches-forecasting]] | aktuell | Quantile Forecasting: wann nötig, N-HiTS MQLoss vs. Chronos-2 out-of-the-box |
+| [[n-hits-hyperparameter]] | aktuell | Kritische N-HiTS Parameter, Wechselwirkungen und Optuna-Suchraum |
 | [[stationaritaet]] | aktuell | Voraussetzung für SARIMAX: ADF/KPSS-Tests, Differenzierung |
 | [[foundation-model-vs-nhits]] | aktuell | Entscheidungsrahmen: Foundation Model vs. N-HiTS — wann was einsetzen |
 | [[hyperparameter-tuning-optuna]] | aktuell | Bayesian Optimization für ML-Hyperparameter mit Optuna |

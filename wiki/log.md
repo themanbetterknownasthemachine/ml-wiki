@@ -5,6 +5,12 @@ type: log
 
 # Wiki Log — ML & Forecasting
 
+## [2026-04-14] query | Probabilistisches Forecasting + N-HiTS Hyperparameter erstellt
+
+- `concept/probabilistisches-forecasting.md`: Wann Quantile nötig, N-HiTS MQLoss vs. Chronos-2, WQL/CRPS/Coverage Metriken
+- `concept/n-hits-hyperparameter.md`: n_pool_kernel_size, n_freq_downsample, Wechselwirkungs-Matrix, Optuna-Suchraum
+- mkdocs.yml: YAML-Strukturfehler behoben (features/icon hing unter extra_css statt theme)
+
 ## [2026-04-14] query | Transformer Architektur + Stationarität Concept-Seiten erstellt
 
 - `concept/transformer-architektur.md`: Q/K/V, Multi-Head Attention, RoPE, Patching, Group Attention (Chronos-2)
