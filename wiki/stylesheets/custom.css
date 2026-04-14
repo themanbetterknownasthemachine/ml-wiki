@@ -32,6 +32,11 @@
   font-weight: 600;
 }
 
+.md-status,
+.md-nav__icon {
+  display: none !important;
+}
+
 /* Kategorie-Titel */
 .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link,
 .md-nav--primary > .md-nav__list > .md-nav__item > nav > .md-nav__title {
