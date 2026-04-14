@@ -74,4 +74,5 @@ nav:
     - ADR-001 N-HiTS statt Prophet: decision/adr-001-nhits-statt-prophet.md
   - Sources:
     - Chronos-2 Paper: source/chronos-2-paper.md
+    - NeuralForecast N-HiTS Docs: source/neuralforecast-nhits-docs.md
   - Log: log.md

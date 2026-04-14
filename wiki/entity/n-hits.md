@@ -5,7 +5,7 @@ tags: [forecasting, deep-learning, neuralforecast, zeitreihen]
 status: aktuell
 erstellt: 2026-04-14
 aktualisiert: 2026-04-14
-quellen: 0
+quellen: 1
 ---
 
 # N-HiTS
@@ -60,7 +60,7 @@ forecast = nf.predict()
 
 - Sehr gute Performance auf täglichen Forecasts mit mehrtägigem Horizont
 - Effizient durch Interpolation (weniger Parameter als N-BEATS bei gleichem Horizont)
-- Kann exogene Features als Input nutzen (Feiertage, Wochentage, etc.)
+- Kann drei Typen exogener Features nutzen: **futr** (zukunftsbekannt), **hist** (nur Vergangenheit), **stat** (zeitinvariant pro Serie)
 - Gut trainierbar auf mittleren Datenmengen (einige hundert bis tausende Beobachtungen)
 - Multi-Series Training möglich (ein Modell für mehrere verwandte Zeitreihen)
 
@@ -88,3 +88,5 @@ forecast = nf.predict()
 - Cross-Validation-Strategie verfeinern (aktuell: Expanding Window)
 
 ## Quellen
+
+- [[neuralforecast-nhits-docs]] — Offizielle NeuralForecast Dokumentation: vollständige Parameterliste, exogene Feature-Typen, scaler_type

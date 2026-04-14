@@ -5,6 +5,14 @@ type: log
 
 # Wiki Log — ML & Forecasting
 
+## [2026-04-14] ingest | NeuralForecast N-HiTS Dokumentation
+
+- Source: nixtlaverse.nixtla.io/neuralforecast/models.nhits.html
+- Source-Seite erstellt: `wiki/source/neuralforecast-nhits-docs.md`
+- `concept/n-hits-hyperparameter.md` korrigiert: Default n_pool_kernel_size [2,2,1], neue Parameter (pooling_mode, interpolation_mode, num_lr_decays, scaler_type, drei exogene Feature-Typen)
+- `entity/n-hits.md` aktualisiert: drei exogene Feature-Typen, Quelle verlinkt
+- ⚠️ Korrektur: n_pool_kernel_size Default war falsch dokumentiert ([8,4,1] statt [2,2,1])
+
 ## [2026-04-14] query | Probabilistisches Forecasting + N-HiTS Hyperparameter erstellt
 
 - `concept/probabilistisches-forecasting.md`: Wann Quantile nötig, N-HiTS MQLoss vs. Chronos-2, WQL/CRPS/Coverage Metriken

@@ -39,6 +39,7 @@ aktualisiert: 2026-04-14
 | Seite | Typ | Beschreibung |
 |-------|-----|-------------|
 | [[chronos-2-paper]] | paper | Chronos-2: Group Attention, multivariate Foundation Model (Amazon, 2025) |
+| [[neuralforecast-nhits-docs]] | dokumentation | NeuralForecast N-HiTS: vollständige Parameterliste, exogene Feature-Typen (Nixtla) |
 
 ## Runbooks
 

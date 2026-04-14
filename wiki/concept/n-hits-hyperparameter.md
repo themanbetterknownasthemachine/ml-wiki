@@ -5,6 +5,7 @@ tags: [n-hits, hyperparameter, tuning, neuralforecast, forecasting]
 status: aktuell
 erstellt: 2026-04-14
 aktualisiert: 2026-04-14
+quellen: 1
 ---
 
 # N-HiTS Hyperparameter
@@ -16,34 +17,47 @@ aktualisiert: 2026-04-14
 ```python
 NHITS(
     # --- Pflicht ---
-    h=30,                           # Forecast-Horizont
-    input_size=90,                  # Lookback-Fenster
+    h=30,                              # Forecast-Horizont
+    input_size=90,                     # Lookback-Fenster
 
     # --- Architektur (kritisch) ---
-    n_pool_kernel_size=[8, 4, 1],   # Pooling pro Stack
-    n_freq_downsample=[4, 2, 1],    # Output-Downsampling pro Stack
-    stack_types=['identity'] * 3,   # Basis-Funktion pro Stack
-    n_blocks=[1, 1, 1],             # Anzahl Blocks pro Stack
-    mlp_units=[[512, 512]] * 3,     # MLP-Grösse pro Stack
+    n_pool_kernel_size=[2, 2, 1],      # Default lt. Docs; anpassen an Saisonalität
+    n_freq_downsample=[4, 2, 1],       # Output-Downsampling pro Stack
+    pooling_mode='MaxPool1d',          # oder 'AvgPool1d'
+    interpolation_mode='linear',       # 'linear', 'nearest', 'cubic'
+    stack_types=['identity'] * 3,      # Basis-Funktion pro Stack
+    n_blocks=[1, 1, 1],                # Anzahl Blocks pro Stack
+    mlp_units=[[512, 512]] * 3,        # MLP-Grösse pro Stack
+    activation='ReLU',                 # ReLU, Softplus, Tanh, SELU, ...
+
+    # --- Exogene Features ---
+    futr_exog_list=['is_holiday'],     # zukunftsbekannte Variablen
+    hist_exog_list=['temperature'],    # nur historisch verfügbar
+    stat_exog_list=['category'],       # zeitinvariant pro Serie
 
     # --- Training ---
     max_steps=1000,
     learning_rate=1e-3,
+    num_lr_decays=3,                   # LR-Decay-Schritte über max_steps
     batch_size=32,
-    loss=MAE(),                     # oder MQLoss für Quantile
+    windows_batch_size=1024,           # Fenster-Sampling pro Batch
+    scaler_type='identity',            # 'standard', 'robust', 'minmax', 'identity'
+    loss=MAE(),                        # oder MQLoss für Quantile
 
     # --- Regularisierung ---
     dropout_prob_theta=0.0,
     val_check_steps=100,
-    early_stop_patience_steps=-1,   # -1 = kein Early Stopping
+    early_stop_patience_steps=-1,      # -1 = kein Early Stopping
 )
 ```
+
+> ⚠️ Korrektur: Default `n_pool_kernel_size` ist laut offizieller Dokumentation `[2, 2, 1]`, nicht `[8, 4, 1]`. Für domänen-spezifische Saisonalitäten sollte der Wert explizit gesetzt werden.
 
 ## Die drei kritischsten Parameter
 
 ### `n_pool_kernel_size` — Was wird in jedem Stack betrachtet?
 
-Steuert das **MaxPooling** vor jedem Stack. Grössere Kernel = Stack sieht gröbere, geglättete Version der Zeitreihe.
+Steuert das **Pooling** (MaxPool oder AvgPool, je nach `pooling_mode`) vor jedem Stack. Grössere Kernel = Stack sieht gröbere, geglättete Version der Zeitreihe. **Default ist `[2, 2, 1]`** — für echte Saisonalitäten fast immer zu klein.
 
 ```
 input_size=90, n_pool_kernel_size=[8, 4, 1]:
@@ -56,6 +70,8 @@ Stack 3 (Pool=1): Sieht alle 90 Punkte         → lernt kurzfristige Details
 **Faustregel**: Absteigend von der Saisonalitätslänge bis 1.
 - Tägliche Daten, Wochenmuster (s=7): `[7, 3, 1]` oder `[8, 4, 1]`
 - Tägliche Daten, Jahresmuster (s=365): `[30, 7, 1]` oder `[52, 12, 1]`
+
+**`pooling_mode`**: `'MaxPool1d'` (aggressiv, robust gegen Spikes) vs. `'AvgPool1d'` (weicher, besser bei verrauschten Daten).
 
 ### `n_freq_downsample` — Wie viele Koeffizienten gibt jeder Stack aus?
 
@@ -102,13 +118,29 @@ NHITS(
 
 Early Stopping ist robuster gegen Overfitting, verlängert aber den Tuning-Prozess (da das Modell unterschiedlich lange trainiert).
 
-### `learning_rate`
+### `learning_rate` und `num_lr_decays`
 
 Typischer Bereich: `1e-4` bis `1e-2`. Interagiert mit `batch_size`:
 - Grosses `batch_size` + hohes `lr` = instabiles Training
 - Kleines `batch_size` + niedriges `lr` = langsam aber stabil
 
-**Linear Scaling Rule** (als Startpunkt): `lr ∝ batch_size`. D.h. wenn `batch_size` verdoppelt wird, `lr` ebenfalls verdoppeln.
+**`num_lr_decays=3`** (Default): LR wird 3× über `max_steps` um Faktor 10 reduziert:
+```
+max_steps=1000, num_lr_decays=3:
+Step 0–333:   lr = 1e-3
+Step 333–666: lr = 1e-4
+Step 666–999: lr = 1e-5
+```
+Für stabiles Training mit `early_stop_patience_steps` empfiehlt sich `num_lr_decays=0` oder `1`, da der Decay-Zeitpunkt nicht mehr mit der tatsächlichen Trainings-Dauer synchronisiert ist.
+
+### `scaler_type` — Interne Input-Normalisierung
+
+| Option | Wann sinnvoll |
+|--------|---------------|
+| `'identity'` (Default) | Daten bereits normalisiert oder gleiche Skala |
+| `'standard'` | Zeitreihen mit sehr unterschiedlichen Niveaus (Multi-Serie) |
+| `'robust'` | Viele Ausreisser in Trainingsdaten |
+| `'minmax'` | Bounded Outputs gewünscht |
 
 ## Wechselwirkungs-Matrix
 
@@ -118,8 +150,10 @@ Typischer Bereich: `1e-4` bis `1e-2`. Interagiert mit `batch_size`:
 | `n_pool_kernel_size` | `input_size` | `input_size / max_pool` sollte ≥ 5 bleiben |
 | `n_freq_downsample` | `h` | `h` muss durch `n_freq_downsample[i]` teilbar sein (oder NeuralForecast rundet) |
 | `max_steps` | `learning_rate` | Hohes `lr` + viele Steps = divergiert; niedriges `lr` + wenige Steps = untertrainiert |
+| `max_steps` | `num_lr_decays` | Decays werden gleichmässig verteilt — bei Early Stopping kann letzter Decay zu spät kommen |
 | `mlp_units` | `batch_size` | Grösseres MLP braucht mehr Samples pro Batch für stabile Gradienten |
 | `loss=MQLoss` | `mlp_units` | Quantile-Loss braucht mehr Kapazität als MAE → grössere MLPs testen |
+| `scaler_type` | `learning_rate` | Mit `'standard'`-Scaler kann `lr` oft etwas höher angesetzt werden |
 
 ## Optuna-Suchraum
 
@@ -177,6 +211,10 @@ study.optimize(objective, n_trials=50)
 | Starke Jahressaisonalität | `[30, 7, 1]` | `5*h` bis `7*h` | Grober Stack muss Jahrestrend erfassen |
 | Kein klares Muster | `[4, 2, 1]` | `2*h` | Konservativ, lässt Modell selbst lernen |
 | Kurze Zeitreihen (<1 Jahr) | `[4, 2, 1]` + kleines `mlp_units` | `2*h` | Weniger Kapazität gegen Overfitting |
+
+## Quellen
+
+- [[neuralforecast-nhits-docs]] — Offizielle NeuralForecast Dokumentation, vollständige Parameterliste
 
 ## Verwandte Seiten
 
