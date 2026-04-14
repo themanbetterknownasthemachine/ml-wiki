@@ -19,6 +19,8 @@ aktualisiert: 2026-04-14
 | Seite | Status | Beschreibung |
 |-------|--------|-------------|
 | [[backtesting]] | aktuell | Zeitreihen-gerechte Evaluation: Expanding/Sliding Window, Metriken, Fallstricke |
+| [[transformer-architektur]] | aktuell | Q/K/V Attention, RoPE, Patching — Basis von Chronos-2 und TimesFM |
+| [[stationaritaet]] | aktuell | Voraussetzung für SARIMAX: ADF/KPSS-Tests, Differenzierung |
 | [[foundation-model-vs-nhits]] | aktuell | Entscheidungsrahmen: Foundation Model vs. N-HiTS — wann was einsetzen |
 | [[hyperparameter-tuning-optuna]] | aktuell | Bayesian Optimization für ML-Hyperparameter mit Optuna |
 | [[shap-explainability]] | aktuell | Erklärbarkeit von ML-Vorhersagen über Shapley-Werte |
@@ -49,7 +51,7 @@ Diese Seiten werden in bestehenden Pages referenziert, haben aber noch keine eig
 - ~~[[Backtesting]]~~ → erstellt als [[backtesting]]
 - [[Bias-Variance Tradeoff]] — Overfitting vs. Underfitting verstehen
 - [[Gradient Descent]] — Optimierungsalgorithmus für Neural Networks
-- [[Transformer Architektur]] — Q/K/V, Attention, RoPE
+- ~~[[Transformer Architektur]]~~ → erstellt als [[transformer-architektur]]
 - [[N-BEATS]] — Vorgängermodell von N-HiTS
 - [[PatchTST]] — Transformer-basiertes Forecasting-Modell
 - [[LightGBM Forecasting]] — Gradient Boosting für Zeitreihen
@@ -57,7 +59,7 @@ Diese Seiten werden in bestehenden Pages referenziert, haben aber noch keine eig
 - [[NeuralForecast Bibliothek]] — Nixtla Framework
 - [[Airflow DAG Forecasting]] — Orchestrierung
 - [[Transfer Learning]] — Wissenstransfer zwischen Domänen
-- [[Stationarität]] — Grundvoraussetzung für ARIMA-Modelle
+- ~~[[Stationarität]]~~ → erstellt als [[stationaritaet]]
 - [[Informationskriterien AIC BIC]] — Modellselektion
 - [[Ensemble]] — Kombination mehrerer Modelle
 - [[ADR-002 Monitoring Zwei-Stufen-Ansatz]] — Monitoring-Architektur

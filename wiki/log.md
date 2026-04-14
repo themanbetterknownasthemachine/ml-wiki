@@ -5,6 +5,12 @@ type: log
 
 # Wiki Log — ML & Forecasting
 
+## [2026-04-14] query | Transformer Architektur + Stationarität Concept-Seiten erstellt
+
+- `concept/transformer-architektur.md`: Q/K/V, Multi-Head Attention, RoPE, Patching, Group Attention (Chronos-2)
+- `concept/stationaritaet.md`: ADF/KPSS-Tests, Differenzierung, Bezug zu SARIMAX vs. Deep Learning
+- Index + mkdocs.yml aktualisiert
+
 ## [2026-04-14] query | Backtesting Concept-Seite erstellt
 
 - Neue Concept-Seite: `concept/backtesting.md`

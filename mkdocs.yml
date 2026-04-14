@@ -9,17 +9,18 @@ theme:
   language: de
   palette:
     - scheme: default
-      primary: indigo
-      accent: teal
+      primary: custom
       toggle:
         icon: material/brightness-7
         name: Dark Mode
     - scheme: slate
-      primary: indigo
-      accent: teal
+      primary: custom
       toggle:
         icon: material/brightness-4
         name: Light Mode
+
+extra_css:
+  - stylesheets/custom.css
   features:
     - navigation.instant
     - navigation.sections
@@ -64,6 +65,8 @@ nav:
   - Concepts:
     - Backtesting: concept/backtesting.md
     - Foundation Model vs. N-HiTS: concept/foundation-model-vs-nhits.md
+    - Transformer Architektur: concept/transformer-architektur.md
+    - Stationarität: concept/stationaritaet.md
     - Hyperparameter-Tuning (Optuna): concept/hyperparameter-tuning-optuna.md
     - SHAP Explainability: concept/shap-explainability.md
     - Feature Engineering Zeitreihen: concept/feature-engineering-zeitreihen.md
