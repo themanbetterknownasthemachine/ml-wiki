@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Bundle wiki content for chat
+        run: python scripts/bundle_wiki.py
+
       - name: Build site
         run: mkdocs build
 
