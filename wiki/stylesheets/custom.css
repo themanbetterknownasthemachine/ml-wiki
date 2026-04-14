@@ -33,7 +33,10 @@
 }
 
 .md-status,
-.md-nav__icon {
+.md-nav__icon,
+.md-nav .md-annotation,
+.md-nav [title]::after,
+abbr[title] {
   display: none !important;
 }
 
