@@ -17,37 +17,33 @@ quellen: 1
 ```python
 NHITS(
     # --- Pflicht ---
-    h=30,                              # Forecast-Horizont
-    input_size=90,                     # Lookback-Fenster
-
+    h=30,  # Forecast-Horizont
+    input_size=90,  # Lookback-Fenster
     # --- Architektur (kritisch) ---
-    n_pool_kernel_size=[2, 2, 1],      # Default lt. Docs; anpassen an Saisonalität
-    n_freq_downsample=[4, 2, 1],       # Output-Downsampling pro Stack
-    pooling_mode='MaxPool1d',          # oder 'AvgPool1d'
-    interpolation_mode='linear',       # 'linear', 'nearest', 'cubic'
-    stack_types=['identity'] * 3,      # Basis-Funktion pro Stack
-    n_blocks=[1, 1, 1],                # Anzahl Blocks pro Stack
-    mlp_units=[[512, 512]] * 3,        # MLP-Grösse pro Stack
-    activation='ReLU',                 # ReLU, Softplus, Tanh, SELU, ...
-
+    n_pool_kernel_size=[2, 2, 1],  # Default lt. Docs; anpassen an Saisonalität
+    n_freq_downsample=[4, 2, 1],  # Output-Downsampling pro Stack
+    pooling_mode="MaxPool1d",  # oder 'AvgPool1d'
+    interpolation_mode="linear",  # 'linear', 'nearest', 'cubic'
+    stack_types=["identity"] * 3,  # Basis-Funktion pro Stack
+    n_blocks=[1, 1, 1],  # Anzahl Blocks pro Stack
+    mlp_units=[[512, 512]] * 3,  # MLP-Grösse pro Stack
+    activation="ReLU",  # ReLU, Softplus, Tanh, SELU, ...
     # --- Exogene Features ---
-    futr_exog_list=['is_holiday'],     # zukunftsbekannte Variablen
-    hist_exog_list=['temperature'],    # nur historisch verfügbar
-    stat_exog_list=['category'],       # zeitinvariant pro Serie
-
+    futr_exog_list=["is_holiday"],  # zukunftsbekannte Variablen
+    hist_exog_list=["temperature"],  # nur historisch verfügbar
+    stat_exog_list=["category"],  # zeitinvariant pro Serie
     # --- Training ---
     max_steps=1000,
     learning_rate=1e-3,
-    num_lr_decays=3,                   # LR-Decay-Schritte über max_steps
+    num_lr_decays=3,  # LR-Decay-Schritte über max_steps
     batch_size=32,
-    windows_batch_size=1024,           # Fenster-Sampling pro Batch
-    scaler_type='identity',            # 'standard', 'robust', 'minmax', 'identity'
-    loss=MAE(),                        # oder MQLoss für Quantile
-
+    windows_batch_size=1024,  # Fenster-Sampling pro Batch
+    scaler_type="identity",  # 'standard', 'robust', 'minmax', 'identity'
+    loss=MAE(),  # oder MQLoss für Quantile
     # --- Regularisierung ---
     dropout_prob_theta=0.0,
     val_check_steps=100,
-    early_stop_patience_steps=-1,      # -1 = kein Early Stopping
+    early_stop_patience_steps=-1,  # -1 = kein Early Stopping
 )
 ```
 
@@ -111,7 +107,7 @@ NHITS(max_steps=1000)
 # Option B: Early Stopping
 NHITS(
     max_steps=5000,
-    val_check_steps=100,           # alle 100 Steps auf Val prüfen
+    val_check_steps=100,  # alle 100 Steps auf Val prüfen
     early_stop_patience_steps=10,  # stoppe nach 10 mal keine Verbesserung
 )
 ```
@@ -163,13 +159,9 @@ Es gibt zwei valide Ansätze für den Suchraum:
 
 ```python
 pool_sizes = trial.suggest_categorical(
-    'pool_sizes',
-    [[8, 4, 1], [16, 8, 1], [4, 2, 1], [7, 3, 1]]
+    "pool_sizes", [[8, 4, 1], [16, 8, 1], [4, 2, 1], [7, 3, 1]]
 )
-freq_down = trial.suggest_categorical(
-    'freq_down',
-    [[4, 2, 1], [8, 4, 1], [2, 1, 1]]
-)
+freq_down = trial.suggest_categorical("freq_down", [[4, 2, 1], [8, 4, 1], [2, 1, 1]])
 ```
 
 **Vorteil**: Konsistenz garantiert — ungültige Kombinationen ausgeschlossen.  
@@ -198,10 +190,13 @@ def nhits_objective(trial):
     scaler = trial.suggest_categorical("scaler", ["robust", "standard", "minmax"])
     dropout = trial.suggest_float("dropout", 0.0, 0.3)
     interp_mode = trial.suggest_categorical("interp_mode", ["linear", "nearest"])
-    max_steps = trial.suggest_categorical("max_steps", [200, 300, 400])  # reduziert für Speed
+    max_steps = trial.suggest_categorical(
+        "max_steps", [200, 300, 400]
+    )  # reduziert für Speed
 
     model = NHITS(
-        h=H, input_size=INPUT_SIZE,
+        h=H,
+        input_size=INPUT_SIZE,
         n_pool_kernel_size=n_pool_kernel_size,
         n_freq_downsample=n_freq_downsample,
         n_blocks=n_blocks,
@@ -223,10 +218,17 @@ def nhits_objective(trial):
 ```python
 # Bekannte Baseline als erster Trial einreihen
 study.enqueue_trial({
-    "pool_k_0": 4, "pool_k_1": 4, "pool_k_2": 1,
-    "freq_d_0": 8, "freq_d_1": 2, "freq_d_2": 1,
-    "lr": 1e-3, "scaler": "robust", "dropout": 0.0,
-    "interp_mode": "linear", "max_steps": 400,
+    "pool_k_0": 4,
+    "pool_k_1": 4,
+    "pool_k_2": 1,
+    "freq_d_0": 8,
+    "freq_d_1": 2,
+    "freq_d_2": 1,
+    "lr": 1e-3,
+    "scaler": "robust",
+    "dropout": 0.0,
+    "interp_mode": "linear",
+    "max_steps": 400,
 })
 
 study.optimize(nhits_objective, n_trials=40)
@@ -234,8 +236,8 @@ study.optimize(nhits_objective, n_trials=40)
 # Finales Modell mit vollen Steps und stabilerem Early Stopping
 best = NHITS(
     **study.best_params_reconstructed,
-    max_steps=500,                # volle Steps (statt 200-400 im Tuning)
-    early_stop_patience_steps=10, # stabiler (statt 5 im Tuning)
+    max_steps=500,  # volle Steps (statt 200-400 im Tuning)
+    early_stop_patience_steps=10,  # stabiler (statt 5 im Tuning)
 )
 ```
 
