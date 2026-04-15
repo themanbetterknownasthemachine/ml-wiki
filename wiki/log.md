@@ -5,6 +5,32 @@ type: log
 
 # Wiki Log — ML & Forecasting
 
+## [2026-04-15] query | Signale für nahes Optimum
+
+- Frage: Welche Signale zeigen an, dass ein Modell bereits nahe am Optimum ist?
+- Antwort synthetisiert aus: `concept/tuning-vs-baseline`, `source/nhits-tuning-dokumentation`
+- Keine neue Seite — Frage ist Teilmenge von `concept/tuning-vs-baseline` (Abschnitt "Signale: Baseline ist bereits optimal")
+- Vier Signale zusammengefasst: flache Optuna-Kurve, geringe Parameter Importance, strukturlose Residuen, domänenwissensbasierte Baseline
+
+## [2026-04-15] query | Wann lohnt sich Hyperparameter-Tuning?
+
+- Frage: Wann bringt Tuning Gewinn — und wann ist die Baseline bereits optimal?
+- Quellen gelesen: `source/nhits-tuning-dokumentation`, `concept/hyperparameter-tuning-optuna`, `concept/n-hits-hyperparameter`, `concept/backtesting`
+- Neue Concept-Seite: `concept/tuning-vs-baseline.md`
+- Inhalt: Signale für/gegen Tuning, Tuning-Canary (15 Trials), Entscheidungsrahmen, Alternativen (Ensemble, Features, Daten)
+- Key Insight: Flache Optuna-Kurve nach Warm Start ist das stärkste Signal für eine bereits optimale Baseline
+- Index aktualisiert
+
+## [2026-04-15] ingest | N-HiTS Tuning-Dokumentation (internes Notebook)
+
+- Source: `raw/NHITS_Tuning_Dokumentation.md`
+- Source-Seite erstellt: `wiki/source/nhits-tuning-dokumentation.md`
+- `entity/n-hits.md` aktualisiert: Ensemble-Strategien, Modell-Persistenz, Windows-Workarounds, Praxiserfahrung Tuning vs. Baseline
+- `concept/n-hits-hyperparameter.md` erweitert: Per-Stack-Suchraum (Ansatz B), Warm Start mit `enqueue_trial()`, zweistufige max_steps, Parameter Importance
+- `concept/hyperparameter-tuning-optuna.md` erweitert: Warm Start, zweistufige max_steps, Study-Persistenz als .pkl
+- `concept/feature-engineering-zeitreihen.md` erweitert: erweiterte `day_before_holiday`-Logik (3 Fälle), `is_short_week`-Feature, Business-Day-Imputation mit wochentag-spezifischem Median
+- Key Finding: Optuna-Tuning (40 Trials) fand keinen Gewinn gegenüber Baseline — Baseline war bereits nahe optimal
+
 ## [2026-04-14] ingest | NeuralForecast N-HiTS Dokumentation
 
 - Source: nixtlaverse.nixtla.io/neuralforecast/models.nhits.html

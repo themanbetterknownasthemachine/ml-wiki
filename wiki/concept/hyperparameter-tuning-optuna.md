@@ -4,7 +4,7 @@ type: concept
 tags: [hyperparameter, optimierung, optuna, ml-workflow]
 status: aktuell
 erstellt: 2026-04-14
-aktualisiert: 2026-04-14
+aktualisiert: 2026-04-15
 ---
 
 # Hyperparameter-Tuning mit Optuna
@@ -87,6 +87,64 @@ print(f"Beste Parameter: {study.best_params}")
 
 **Wichtig**: Für [[Backtesting|zeitreihen-gerechte Evaluation]] immer Cross-Validation mit `n_windows` statt einfachem Train/Test Split verwenden.
 
+## Fortgeschrittene Patterns
+
+### Warm Start mit `enqueue_trial()`
+
+Wenn eine bekannte gute Konfiguration existiert (z.B. Baseline-Modell), kann sie als erster Trial eingereiht werden. So hat Optuna sofort einen Referenzpunkt und verliert keine Trials auf zufällige Exploration in schlechten Regionen:
+
+```python
+study.enqueue_trial({
+    "learning_rate": 1e-3,
+    "pool_k_0": 4, "pool_k_1": 4, "pool_k_2": 1,
+    # ... alle weiteren Parameter
+})
+study.optimize(objective, n_trials=40)
+```
+
+### Zweistufige max_steps: Tuning vs. finales Modell
+
+Für Deep-Learning-Modelle auf CPU ist jeder Trial zeitintensiv. Reduzierte `max_steps` während des Tunings sparen erheblich Zeit:
+
+```python
+# Tuning-Trials: schnelle Annäherung
+NHITS(max_steps=300, early_stop_patience_steps=5)
+
+# Finales Modell: vollständiges Training
+NHITS(max_steps=500, early_stop_patience_steps=10)
+```
+
+**Warum grössere Patience im finalen Modell?** Mehr Steps bedeuten, dass das Early Stopping-Fenster proportional länger sein sollte, um echte Plateaus von kurzen Schwankungen zu unterscheiden.
+
+### Study persistieren für spätere Analyse
+
+```python
+import pickle
+
+# Study speichern
+with open("optuna_study.pkl", "wb") as f:
+    pickle.dump(study, f)
+
+# Study laden und fortsetzen
+with open("optuna_study.pkl", "rb") as f:
+    study = pickle.load(f)
+
+study.optimize(objective, n_trials=20)  # 20 weitere Trials hinzufügen
+```
+
+Gespeicherte Studies ermöglichen:
+- Nachträgliche Parameter-Importance-Analyse
+- Fortsetzen des Tunings mit mehr Trials
+- Reproduzierbare Ergebnisse (`TPESampler(seed=42)`)
+
+### Parameter Importance analysieren
+
+```python
+importances = optuna.importance.get_param_importances(study)
+# Fano-Importance: Random-Forest-basiertes Mass
+# Hohe Importance = kleine Parameteränderungen haben grosse Auswirkung auf MAE
+```
+
 ## Eingesetzt in
 
 - [[N-HiTS]] — Optimierung der Modellarchitektur und Trainingsparameter
@@ -99,3 +157,5 @@ print(f"Beste Parameter: {study.best_params}")
 - [[Gradient Descent]] — Der Optimierungsprozess innerhalb des Trainings (vs. Hyperparameter-Tuning ausserhalb)
 
 ## Quellen
+
+- [[nhits-tuning-dokumentation]] — Konkretes Praxisbeispiel: Warm Start, zweistufige max_steps, Study-Persistenz

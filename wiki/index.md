@@ -1,7 +1,7 @@
 ---
 title: "Index"
 type: index
-aktualisiert: 2026-04-14
+aktualisiert: 2026-04-15
 ---
 
 # Wiki Index — ML & Forecasting
@@ -25,6 +25,7 @@ aktualisiert: 2026-04-14
 | [[stationaritaet]] | aktuell | Voraussetzung für SARIMAX: ADF/KPSS-Tests, Differenzierung |
 | [[foundation-model-vs-nhits]] | aktuell | Entscheidungsrahmen: Foundation Model vs. N-HiTS — wann was einsetzen |
 | [[hyperparameter-tuning-optuna]] | aktuell | Bayesian Optimization für ML-Hyperparameter mit Optuna |
+| [[tuning-vs-baseline]] | aktuell | Entscheidungsrahmen: Wann lohnt Tuning — und wann ist die Baseline bereits optimal? |
 | [[shap-explainability]] | aktuell | Erklärbarkeit von ML-Vorhersagen über Shapley-Werte |
 | [[feature-engineering-zeitreihen]] | aktuell | Lag-, Kalender- und Rolling-Features für Zeitreihen |
 
@@ -40,6 +41,7 @@ aktualisiert: 2026-04-14
 |-------|-----|-------------|
 | [[chronos-2-paper]] | paper | Chronos-2: Group Attention, multivariate Foundation Model (Amazon, 2025) |
 | [[neuralforecast-nhits-docs]] | dokumentation | NeuralForecast N-HiTS: vollständige Parameterliste, exogene Feature-Typen (Nixtla) |
+| [[nhits-tuning-dokumentation]] | dokumentation | N-HiTS Tuning-Experiment: Optuna-Suchraum, Warm Start, Ensemble, Modell-Persistenz |
 
 ## Runbooks
 

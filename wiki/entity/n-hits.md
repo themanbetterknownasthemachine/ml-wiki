@@ -4,8 +4,8 @@ type: entity
 tags: [forecasting, deep-learning, neuralforecast, zeitreihen]
 status: aktuell
 erstellt: 2026-04-14
-aktualisiert: 2026-04-14
-quellen: 1
+aktualisiert: 2026-04-15
+quellen: 2
 ---
 
 # N-HiTS
@@ -80,6 +80,41 @@ forecast = nf.predict()
 - [[NeuralForecast Bibliothek]] — Implementierungs-Framework
 - [[Airflow DAG Forecasting]] — Orchestrierung des Trainings- und Inference-Prozesses
 
+## Ensemble
+
+N-HiTS kann mit anderen Modellen (z.B. [[PatchTST]], TSMixerx) zu einem Ensemble kombiniert werden. Drei Strategien:
+
+| Strategie | Formel | Wann sinnvoll |
+|-----------|--------|---------------|
+| Gleichgewichtet | `(A + B + C) / 3` | Einfacher Einstieg |
+| MAE-gewichtet | `Σ(wᵢ * Mᵢ)` mit `wᵢ = 1/MAEᵢ` | Wenn Modelle klar unterschiedliche Qualität haben |
+| Median | `median(A, B, C)` | Empfohlen — robust gegen Ausreisser in einem Modell |
+
+## Modell-Persistenz
+
+```python
+# Speichern
+nf.save(path="models/nhits_v3/", overwrite=True)
+
+# Laden für neue Prognosen (kein Retraining nötig)
+nf_loaded = NeuralForecast.load(path="models/nhits_v3/")
+preds = nf_loaded.predict(futr_df=future_features_df)
+```
+
+Versionierte Verzeichnisnamen (z.B. `nhits_v3_20260410`) ermöglichen Rollback auf frühere Modelle.
+
+## Praxiserfahrung: Tuning vs. Baseline
+
+In einem durchgeführten Optuna-Tuning (40 Trials, TPE-Sampler) brachte die Suche **keinen Gewinn** gegenüber der bestehenden Baseline-Konfiguration. Interpretation: Die initiale Konfiguration war bereits nahe optimal. Tuning lohnt sich mehr, wenn das Modell noch nicht auf die Zeitreihen-Charakteristik angepasst wurde.
+
+## Windows-spezifische Hinweise
+
+```python
+import os, torch
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"  # Zwei OpenMP-Instanzen (conda + PyTorch)
+torch.set_num_threads(1)                       # Deadlock-Vermeidung auf Windows
+```
+
 ## Offene Fragen / Nächste Schritte
 
 - Evaluation von [[Foundation Models für Zeitreihen]] als Ergänzung/Ablösung
@@ -90,3 +125,4 @@ forecast = nf.predict()
 ## Quellen
 
 - [[neuralforecast-nhits-docs]] — Offizielle NeuralForecast Dokumentation: vollständige Parameterliste, exogene Feature-Typen, scaler_type
+- [[nhits-tuning-dokumentation]] — Praxisdokumentation: Tuning-Ergebnis, Ensemble-Strategien, Modell-Persistenz, Windows-Workarounds

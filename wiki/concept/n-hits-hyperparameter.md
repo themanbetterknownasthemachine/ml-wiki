@@ -4,7 +4,7 @@ type: concept
 tags: [n-hits, hyperparameter, tuning, neuralforecast, forecasting]
 status: aktuell
 erstellt: 2026-04-14
-aktualisiert: 2026-04-14
+aktualisiert: 2026-04-15
 quellen: 1
 ---
 
@@ -157,51 +157,89 @@ Für stabiles Training mit `early_stop_patience_steps` empfiehlt sich `num_lr_de
 
 ## Optuna-Suchraum
 
+Es gibt zwei valide Ansätze für den Suchraum:
+
+### Ansatz A: Vordefinierte Kombinationen (einfach, konsistent)
+
 ```python
-import optuna
-from neuralforecast import NeuralForecast
-from neuralforecast.models import NHITS
-from neuralforecast.losses.pytorch import MAE
-
-def objective(trial):
-    # Architektur
-    pool_sizes = trial.suggest_categorical(
-        'pool_sizes',
-        [[8, 4, 1], [16, 8, 1], [4, 2, 1], [7, 3, 1]]
-    )
-    freq_down = trial.suggest_categorical(
-        'freq_down',
-        [[4, 2, 1], [8, 4, 1], [2, 1, 1]]
-    )
-    input_mult = trial.suggest_int('input_mult', 2, 6)
-
-    # Training
-    lr = trial.suggest_float('lr', 1e-4, 1e-2, log=True)
-    batch_size = trial.suggest_categorical('batch_size', [16, 32, 64])
-    mlp_size = trial.suggest_categorical('mlp_size', [256, 512, 1024])
-
-    model = NHITS(
-        h=H,
-        input_size=input_mult * H,
-        n_pool_kernel_size=pool_sizes,
-        n_freq_downsample=freq_down,
-        mlp_units=[[mlp_size, mlp_size]] * 3,
-        learning_rate=lr,
-        batch_size=batch_size,
-        max_steps=500,
-        loss=MAE(),
-    )
-
-    nf = NeuralForecast(models=[model], freq='D')
-    cv = nf.cross_validation(df=train_df, n_windows=3, step_size=H)
-
-    return cv['y'].sub(cv['NHITS']).abs().mean()  # MAE
-
-study = optuna.create_study(direction='minimize')
-study.optimize(objective, n_trials=50)
+pool_sizes = trial.suggest_categorical(
+    'pool_sizes',
+    [[8, 4, 1], [16, 8, 1], [4, 2, 1], [7, 3, 1]]
+)
+freq_down = trial.suggest_categorical(
+    'freq_down',
+    [[4, 2, 1], [8, 4, 1], [2, 1, 1]]
+)
 ```
 
-**Wichtig**: Architektur-Parameter (`pool_sizes`, `freq_down`) als `suggest_categorical` mit vordefinierten gültigen Kombinationen — nicht als unabhängige Integer, da die Konsistenz-Constraint sonst verletzt wird.
+**Vorteil**: Konsistenz garantiert — ungültige Kombinationen ausgeschlossen.  
+**Nachteil**: Kleinerer Suchraum, weniger Flexibilität.
+
+### Ansatz B: Per-Stack-Parameter (flexibel, grösserer Suchraum)
+
+```python
+def nhits_objective(trial):
+    n_pool_kernel_size = [
+        trial.suggest_categorical("pool_k_0", [1, 2, 4, 8, 16]),
+        trial.suggest_categorical("pool_k_1", [1, 2, 4, 8]),
+        trial.suggest_categorical("pool_k_2", [1, 2]),
+    ]
+    n_freq_downsample = [
+        trial.suggest_categorical("freq_d_0", [4, 8, 16, 24]),
+        trial.suggest_categorical("freq_d_1", [2, 4, 8]),
+        trial.suggest_categorical("freq_d_2", [1, 2]),
+    ]
+    n_blocks = [
+        trial.suggest_int("n_blocks_0", 1, 4),
+        trial.suggest_int("n_blocks_1", 1, 4),
+        trial.suggest_int("n_blocks_2", 1, 4),
+    ]
+    lr = trial.suggest_float("lr", 1e-4, 1e-2, log=True)
+    scaler = trial.suggest_categorical("scaler", ["robust", "standard", "minmax"])
+    dropout = trial.suggest_float("dropout", 0.0, 0.3)
+    interp_mode = trial.suggest_categorical("interp_mode", ["linear", "nearest"])
+    max_steps = trial.suggest_categorical("max_steps", [200, 300, 400])  # reduziert für Speed
+
+    model = NHITS(
+        h=H, input_size=INPUT_SIZE,
+        n_pool_kernel_size=n_pool_kernel_size,
+        n_freq_downsample=n_freq_downsample,
+        n_blocks=n_blocks,
+        learning_rate=lr,
+        scaler_type=scaler,
+        dropout_prob_theta=dropout,
+        interpolation_mode=interp_mode,
+        max_steps=max_steps,
+        early_stop_patience_steps=5,  # Tuning: schnell
+    )
+    # ... training und return MAE
+```
+
+**Vorteil**: Jeder Stack kann unabhängig variiert werden.  
+**Wichtig**: Wertebereich von Stack 0 zu Stack 2 absteigend halten (konsistente Granularität).
+
+### Warm Start und zweistufiges Training
+
+```python
+# Bekannte Baseline als erster Trial einreihen
+study.enqueue_trial({
+    "pool_k_0": 4, "pool_k_1": 4, "pool_k_2": 1,
+    "freq_d_0": 8, "freq_d_1": 2, "freq_d_2": 1,
+    "lr": 1e-3, "scaler": "robust", "dropout": 0.0,
+    "interp_mode": "linear", "max_steps": 400,
+})
+
+study.optimize(nhits_objective, n_trials=40)
+
+# Finales Modell mit vollen Steps und stabilerem Early Stopping
+best = NHITS(
+    **study.best_params_reconstructed,
+    max_steps=500,                # volle Steps (statt 200-400 im Tuning)
+    early_stop_patience_steps=10, # stabiler (statt 5 im Tuning)
+)
+```
+
+**Warum reduzierte max_steps im Tuning?** Auf CPU dauert ein Trial 1–3 Minuten. Mit 500 Steps wäre ein 40-Trial-Lauf extrem zeitintensiv. Das finale Modell erhält die volle Trainingszeit.
 
 ## Empfehlungen nach Datencharakteristik
 
@@ -215,6 +253,7 @@ study.optimize(objective, n_trials=50)
 ## Quellen
 
 - [[neuralforecast-nhits-docs]] — Offizielle NeuralForecast Dokumentation, vollständige Parameterliste
+- [[nhits-tuning-dokumentation]] — Konkretes Praxisbeispiel: Per-Stack-Suchraum, Warm Start, zweistufige max_steps
 
 ## Verwandte Seiten
 

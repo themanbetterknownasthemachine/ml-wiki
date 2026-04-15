@@ -4,7 +4,7 @@ type: concept
 tags: [feature-engineering, zeitreihen, forecasting]
 status: aktuell
 erstellt: 2026-04-14
-aktualisiert: 2026-04-14
+aktualisiert: 2026-04-15
 ---
 
 # Feature Engineering für Zeitreihen
@@ -52,6 +52,42 @@ df['days_to_next_holiday'] = df['date'].apply(
 )
 ```
 
+#### Erweiterte `day_before_holiday`-Logik
+
+Ein einfaches "nächster Tag ist Feiertag" greift zu kurz. Für wochenendadjazente Feiertage braucht man 3 Fälle:
+
+```python
+def is_day_before_holiday(date, hol_all):
+    # Fall 1: direkter nächster Tag ist Feiertag
+    if (date + timedelta(days=1)).date() in hol_all:
+        return 1.0
+    # Fall 2: Freitag und nächster Montag ist Feiertag (langes Wochenende)
+    if date.weekday() == 4 and (date + timedelta(days=3)).date() in hol_all:
+        return 1.0
+    # Fall 3: Donnerstag und Freitag ist Feiertag
+    if date.weekday() == 3 and (date + timedelta(days=1)).date() in hol_all:
+        return 1.0
+    return 0.0
+```
+
+**Wichtig**: Nicht alle Feiertage bedeuten Betriebsschliessung. Es empfiehlt sich, zwei separate Sets zu pflegen:
+- `holidays_closed`: Nur echte Schliessungstage
+- `holidays_all`: Alle gesetzlichen Feiertage (für Vortags-Logik)
+
+#### Kurzwochentage-Feature (`is_short_week`)
+
+Wochen mit einem Feiertag haben weniger Arbeitstage — das Volumen wird auf weniger Tage verteilt:
+
+```python
+def is_short_week(date, hol_closed):
+    monday = date - timedelta(days=date.weekday())
+    return 1.0 if any(
+        (monday + timedelta(days=i)).date() in hol_closed for i in range(5)
+    ) else 0.0
+```
+
+Dieses Feature ist für alle Tage der Woche identisch — nicht nur den Feiertag selbst.
+
 ### Lag-Features (historisch)
 Vergangene Werte als Input — Kernidee der Autoregression.
 
@@ -84,6 +120,23 @@ df['cos_weekday'] = np.cos(2 * np.pi * df['dayofweek'] / 7)
 df['sin_yearly'] = np.sin(2 * np.pi * df['day_of_year'] / 365.25)
 df['cos_yearly'] = np.cos(2 * np.pi * df['day_of_year'] / 365.25)
 ```
+
+### Business-Day-Imputation für NeuralForecast
+
+NeuralForecast erwartet einen lückenlosen Zeitreihen-Index. Fehlende Tage (Feiertage, Betriebsschliessungen) müssen vor dem Training aufgefüllt werden. Globaler Median ist dabei suboptimal — ein wochentag-spezifischer Median ist präziser:
+
+```python
+full_bday_idx = pd.bdate_range(df.index.min(), df.index.max(), freq="B")
+df_full = df.reindex(full_bday_idx)
+
+# Wochentag-spezifischer Median: Montag bekommt Montags-Median, etc.
+weekday_medians = df.groupby(df.index.dayofweek)["value"].median()
+df_full["value"] = df_full["value"].fillna(
+    df_full.index.to_series().map(lambda d: weekday_medians[d.dayofweek])
+)
+```
+
+**Wichtig**: Die aufgefüllten Tage sind technisches Hilfsmittel. Bei der Evaluation immer auf die ursprünglichen, echten Beobachtungen filtern (`original_dates_set`).
 
 ## Wann einsetzen
 
@@ -148,3 +201,5 @@ def create_features(df, target_col='value'):
 - [[Backtesting]] — Features müssen über den gesamten Backtest-Zeitraum stabil sein
 
 ## Quellen
+
+- [[nhits-tuning-dokumentation]] — Erweiterte Feiertagslogik, Kurzwochentage-Feature, Business-Day-Imputation
